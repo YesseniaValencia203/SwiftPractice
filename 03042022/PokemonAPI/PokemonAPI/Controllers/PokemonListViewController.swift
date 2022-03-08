@@ -7,48 +7,81 @@
 
 import UIKit
 
+protocol PokemonViewModelDelegate: AnyObject {
+    func onFetchCompleted(with newIndexPathsToReload: [IndexPath]?)
+    func onFetchFailed(with reason: String)
+}
 
 class PokemonListViewController: UIViewController {
-    private var viewModel: PokemonModel!
     
     @IBOutlet weak var tableview: UITableView!
     
-    
+    private weak var delegate: PokemonViewModelDelegate?
+   
+    var pokemonResults = [PokemonPage]()
+    var pokemonPages = [PageResult]()
+    var total = 150
+    var currentCount: Int {
+        return pokemonResults.count
+    }
+    private var isFetchInProgress = false
+    private var currentPage = 1
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         tableview.dataSource = self
         tableview.prefetchDataSource = self
-        viewModel = PokemonModel(delegate: self)
-        viewModel.fetchPokemons()
+        tableview.delegate = self
+        fetchPokemons()
     }
-    
+    func fetchPokemons() {
+        // Prevents more than a single call to the PAI
+        guard !isFetchInProgress else { return }
+        // Prevents more than 150 pokemon being loaded
+        guard currentCount != total else { return }
+        isFetchInProgress = true
+        var path: URL
+        if currentPage == 1 {
+            path = URL(string: (APIEndpoints.pokemonAPI))!
+        } else {
+            path = (pokemonPages.last?.next)!
+        }
+        URLSession.shared.getRequest(url: path, decoding: PageResult.self) { [weak self] result in
+            switch result {
+            case .success(let response):
+                DispatchQueue.main.async {
+                    self?.currentPage += 1
+                    self?.isFetchInProgress = false
+                    self?.pokemonResults.append(contentsOf: response.results!)
+                    self?.pokemonPages.append(response)
+                    if response.previous != nil {
+                        let indexPathsToReload = self?.calculateIndexPathsToReload(from: response.results!)
+                        self?.delegate?.onFetchCompleted(with: indexPathsToReload!)
+                    } else {
+                        self?.tableview.reloadData()
+                        self?.delegate?.onFetchCompleted(with: .none)
+                    }
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self?.isFetchInProgress = false
+                    self?.delegate?.onFetchFailed(with: error.localizedDescription)
+                }
+            }
+        }
+        
+    }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destination = segue.destination as? PokemonDetailsViewController {
-            let thisPokemon = viewModel.pokemonResults[(tableview.indexPathForSelectedRow?.row)!]
+            let thisPokemon = pokemonResults[(tableview.indexPathForSelectedRow?.row)!]
             let pokemonURL = thisPokemon.url
             destination.navigationItem.title = thisPokemon.name!.capitalized
             URLSession.shared.getRequest(url: pokemonURL, decoding: PokemonProfile.self) { results in
                 switch results {
                 case .success(let pokemonProfile):
                     DispatchQueue.main.async {
-                        //destination.navigationItem.title = pokemonProfile.name!.capitalized
-                        destination.pokemonIcons.layer.borderWidth = 0.3
-                        destination.pokemonImage.getImage(from: (pokemonProfile.sprites?.front_default)!, contentMode: .scaleAspectFit)
-                        destination.pokemonImage2.getImage(from: (pokemonProfile.sprites?.back_default)!, contentMode: .scaleAspectFit)
-                        var typesString = "Type: "
-                        for pokemonType in (pokemonProfile.pokemonTypes)! {
-                            typesString += "\((pokemonType.type?.name)!.capitalized) "
-                        }
-                        destination.pokemonTypes.text = typesString
-                        for pokemonAbility in (pokemonProfile.abilities)! {
-                            destination.pokemonAbilities.text += "\((pokemonAbility.ability?.name)!.capitalized)\n"
-                        }
-                        //destination.pokemonTypes.layer.borderWidth = 0.6
-                        destination.pokemonMoves.layer.borderWidth = 0.3
-                        destination.pokemonAbilities.layer.borderWidth = 0.3
-                        for pokemonMove in (pokemonProfile.moves)! {
-                            destination.pokemonMoves.text += "\((pokemonMove.move?.name)!.capitalized)\n"
-                        }
+                        destination.pokemonProfile = pokemonProfile
+                        destination.configureDetailsView()
                     }
                 case .failure(let error):
                     print("PokemonListViewController:prepare: \(error.localizedDescription)")
@@ -57,81 +90,82 @@ class PokemonListViewController: UIViewController {
         }
     }
 }
-
-
 extension PokemonListViewController : UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.total
+        return total
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! PokemonTableViewCell
         if isLoadingCell(for: indexPath) {
-            //cell.configureCell(with: .none)
+            cell.configurePokemonCell(with: .none)
         } else {
-            
-            let poke = viewModel.pokemonResults[indexPath.row]
-            //cell.pokemonImage.getImage(from: (poke.sprites?.front_default)!)
-            //cell.configureCell(with: poke)
+            let poke = pokemonResults[indexPath.row]
             URLSession.shared.getRequest(url: poke.url, decoding: PokemonProfile.self) {  pokemonResult in
                 switch pokemonResult {
                 case .success(let thisPokemon):
                     DispatchQueue.main.async {
-                        cell.pokemonImage.getImage(from: (thisPokemon.sprites?.front_default)!, contentMode: .scaleAspectFill)
-                        cell.pokemonName.text = thisPokemon.name?.capitalized
-                        var typeString = "Type: "
-                        for pokeType in (thisPokemon.pokemonTypes)! {
-                            typeString += "\((pokeType.type?.name)!.capitalized) "
-                        }
-                        cell.pokemonType.text = typeString
+                        cell.configurePokemonCell(with: thisPokemon)
                     }
                 case .failure(let thisError):
                     print("PokemonListViewController:UITableViewDataSource:UITableViewDelegate: \(thisError.localizedDescription)")
                 }
             }
-            
-            
         }
         return cell
     }
     
 }
 extension PokemonListViewController : UITableViewDataSourcePrefetching {
+    /*
+     This method receives index paths for cells to prefetch based on current scroll direction and speed
+     */
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        /*
+         As soon as the table view starts to prefetch a list of index paths, it checks if any of those are not loaded yet in the pokemon list. If so, you need to request a new page of pokemon.
+         */
         if indexPaths.contains(where: isLoadingCell) {
-            viewModel.fetchPokemons()
+            fetchPokemons()
         }
     }
 }
 extension PokemonListViewController: PokemonViewModelDelegate {
     func onFetchFailed(with reason: String) {
-        print("onFetchFailed")
-        
+        print("Fetching this page has failed")
     }
     func onFetchCompleted(with newIndexPathsToReload: [IndexPath]?) {
         guard let newIndexPathsToReload = newIndexPathsToReload else {
+            // If newIndexPathsToReload is nil => first page => makes the table view visible and reloads it
             tableview.isHidden = false
             tableview.reloadData()
             return
         }
+        // If not nil => next pages => find the visible cells that need realoading and tell the table view to only reload those
         let indexPathsToReload = visibleIndexPathsToReload(intersecting: newIndexPathsToReload)
         tableview.reloadRows(at: indexPathsToReload, with: .automatic)
     }
 }
-
-
 private extension PokemonListViewController {
-    /*
-     Allows you to determine whether the cell at that index path is beyond the count of the pokemons you have received so far
-     */
     func isLoadingCell(for indexPath: IndexPath) -> Bool {
-        return indexPath.row >= viewModel.currentCount
+        /*
+         Allows you to determine whether in the cell at that index path is beyond the count of the pokemon you have received so far
+         */
+        return indexPath.row >= currentCount
     }
-    /*
-     This method calculates the cells of the table view that you need to reload when you receive a new page. It calculates the intersection of the IndexPaths passes in (previously calcylated by the view model) with the visible ones. You'll use this to avoid refreshing cells that are not currently visible on the screen
-     */
+    
+    private func calculateIndexPathsToReload(from newPokemon: [PokemonPage]) -> [IndexPath] {
+        // Calculates the index paths for the last page of pokemon received
+        let startIndex = pokemonResults.count - newPokemon.count
+        let endIndex = startIndex + newPokemon.count
+        return (startIndex..<endIndex).map { IndexPath(row: $0, section: 0)}
+    }
     func visibleIndexPathsToReload(intersecting indexPaths: [IndexPath]) -> [IndexPath] {
+        /*
+         Calculates the cells of the table view that you need to reload when you receive a new page. It calculates the intersection of the IndexPath(s) passed in with the visible ones.
+         Use this to avoid refreshing cells that are not currently visible on the screen
+         */
         let indexPathsForVisibleRows = tableview.indexPathsForVisibleRows ?? []
         let indexPathsIntersection = Set(indexPathsForVisibleRows).intersection(indexPaths)
         return Array(indexPathsIntersection)
     }
 }
+

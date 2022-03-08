@@ -22,7 +22,6 @@
 		0299AC2927D2C4AD006C8D32 /* PageResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0299AC2827D2C4AD006C8D32 /* PageResult.swift */; };
 		0299AC2E27D2C9E6006C8D32 /* Extensions+URLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0299AC2D27D2C9E6006C8D32 /* Extensions+URLSession.swift */; };
 		0299AC3027D2CA2A006C8D32 /* Extensions+URLSessionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0299AC2F27D2CA2A006C8D32 /* Extensions+URLSessionRequest.swift */; };
-		0299AC4227D31BFB006C8D32 /* PokemonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0299AC4127D31BFB006C8D32 /* PokemonModel.swift */; };
 		0299AC4427D34467006C8D32 /* Extensions+UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0299AC4327D34467006C8D32 /* Extensions+UIImage.swift */; };
 		0299AC8C27D5ABE8006C8D32 /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0299AC8B27D5ABE8006C8D32 /* ColorPalette.swift */; };
 /* End PBXBuildFile section */
@@ -64,7 +63,6 @@
 		0299AC2827D2C4AD006C8D32 /* PageResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageResult.swift; sourceTree = "<group>"; };
 		0299AC2D27D2C9E6006C8D32 /* Extensions+URLSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extensions+URLSession.swift"; sourceTree = "<group>"; };
 		0299AC2F27D2CA2A006C8D32 /* Extensions+URLSessionRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extensions+URLSessionRequest.swift"; sourceTree = "<group>"; };
-		0299AC4127D31BFB006C8D32 /* PokemonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonModel.swift; sourceTree = "<group>"; };
 		0299AC4327D34467006C8D32 /* Extensions+UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extensions+UIImage.swift"; sourceTree = "<group>"; };
 		0299AC8B27D5ABE8006C8D32 /* ColorPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPalette.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -162,7 +160,6 @@
 			children = (
 				0299AC2D27D2C9E6006C8D32 /* Extensions+URLSession.swift */,
 				0299AC2F27D2CA2A006C8D32 /* Extensions+URLSessionRequest.swift */,
-				0299AC4127D31BFB006C8D32 /* PokemonModel.swift */,
 				0299AC4327D34467006C8D32 /* Extensions+UIImage.swift */,
 			);
 			path = Networking;
@@ -324,7 +321,6 @@
 				0299AC2227D2C1B0006C8D32 /* PokemonDetailsViewController.swift in Sources */,
 				0299ABF027D2C066006C8D32 /* AppDelegate.swift in Sources */,
 				0299AC2427D2C2F7006C8D32 /* APIEndpoints.swift in Sources */,
-				0299AC4227D31BFB006C8D32 /* PokemonModel.swift in Sources */,
 				0299AC2027D2C13A006C8D32 /* PokemonTableViewCell.swift in Sources */,
 				0299AC3027D2CA2A006C8D32 /* Extensions+URLSessionRequest.swift in Sources */,
 				0299ABF227D2C066006C8D32 /* SceneDelegate.swift in Sources */,

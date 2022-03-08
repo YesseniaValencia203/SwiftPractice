@@ -8,10 +8,6 @@
 import Foundation
 import UIKit
 
-protocol PokemonViewModelDelegate: AnyObject {
-    func onFetchCompleted(with newIndexPathsToReload: [IndexPath]?)
-    func onFetchFailed(with reason: String)
-}
 final class PokemonModel {
     private weak var delegate: PokemonViewModelDelegate?
     var pokemonResults = [PokemonPage]()

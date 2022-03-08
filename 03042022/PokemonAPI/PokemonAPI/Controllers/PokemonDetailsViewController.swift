@@ -23,6 +23,30 @@ class PokemonDetailsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //configureDetailsView()
+    }
+    
+    func configureDetailsView() {
+        guard let pokemonProfile = pokemonProfile else {
+            return
+        }
+        pokemonIcons.layer.borderWidth = 0.3
+        pokemonImage.getImage(from: (pokemonProfile.sprites?.front_default)!, contentMode: .scaleAspectFit)
+        pokemonImage2.getImage(from: (pokemonProfile.sprites?.back_default)!, contentMode: .scaleAspectFit)
+        var typesString = "Type: "
+        for pokemonType in (pokemonProfile.pokemonTypes)! {
+            typesString += "\((pokemonType.type?.name)!.capitalized) "
+        }
+        pokemonTypes.text = typesString
+        for pokemonAbility in (pokemonProfile.abilities)! {
+            pokemonAbilities.text += "\((pokemonAbility.ability?.name)!.capitalized)\n"
+        }
+        pokemonMoves.layer.borderWidth = 0.3
+        pokemonAbilities.layer.borderWidth = 0.3
+        for pokemonMove in (pokemonProfile.moves)! {
+            pokemonMoves.text += "\((pokemonMove.move?.name)!.capitalized)\n"
+        }
+        
     }
 
 
