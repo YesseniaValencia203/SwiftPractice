@@ -8,7 +8,8 @@
 import UIKit
 
 class PokemonDetailsViewController: UIViewController {
-
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
     var pokemonProfile: PokemonProfile?
     @IBOutlet weak var pokemonTypesStack: UIStackView!
     @IBOutlet weak var pokemonAbilities: UITextView!
@@ -23,13 +24,16 @@ class PokemonDetailsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //configureDetailsView()
+        activityIndicator.hidesWhenStopped = true 
+        activityIndicator.startAnimating()
     }
     
     func configureDetailsView() {
         guard let pokemonProfile = pokemonProfile else {
+            print("PokemonDetailsViewController:configureDetailsView")
             return
         }
+        activityIndicator.stopAnimating()
         pokemonIcons.layer.borderWidth = 0.3
         pokemonImage.getImage(from: (pokemonProfile.sprites?.front_default)!, contentMode: .scaleAspectFit)
         pokemonImage2.getImage(from: (pokemonProfile.sprites?.back_default)!, contentMode: .scaleAspectFit)

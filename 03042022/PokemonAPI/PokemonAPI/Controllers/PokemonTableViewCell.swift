@@ -21,13 +21,12 @@ class PokemonTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         pokemonView.backgroundColor = .darkGray
-        
-        
-    }
+}
     
     func configurePokemonCell(with pokemonProfile: PokemonProfile?) {
         
         if let pokemonProfile = pokemonProfile {
+            isUserInteractionEnabled = true 
             pokemonImage.getImage(from: (pokemonProfile.sprites?.front_default)!, contentMode: .scaleAspectFill)
             pokemonView.backgroundColor = .white
             pokemonName.alpha = 1

@@ -17,11 +17,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" estimatedSectionHeaderHeight="-1" sectionFooterHeight="28" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="IB9-yZ-0uJ">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="IB9-yZ-0uJ">
                                 <rect key="frame" x="0.0" y="88" width="414" height="754"/>
+                                <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFit" preservesSuperviewLayoutMargins="YES" selectionStyle="blue" indentationLevel="9" indentationWidth="8" shouldIndentWhileEditing="NO" reuseIdentifier="cell" focusStyle="custom" textLabel="1ri-5Z-aCB" detailTextLabel="q84-1u-iaE" imageView="rCN-Ao-nwc" rowHeight="73" style="IBUITableViewCellStyleSubtitle" id="1d8-e8-MTq" customClass="PokemonTableViewCell" customModule="PokemonAPI" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="44.5" width="414" height="73"/>
+                                        <rect key="frame" x="0.0" y="49.5" width="414" height="73"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="1d8-e8-MTq" id="gE3-WD-CMY">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="73"/>
@@ -87,6 +88,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="5M0-WG-Mrk">
+                                <rect key="frame" x="197" y="438" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </activityIndicatorView>
                             <stackView opaque="NO" contentMode="scaleAspectFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Gj0-YI-mMv">
                                 <rect key="frame" x="0.0" y="88" width="414" height="774"/>
                                 <subviews>
@@ -175,6 +180,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="Amt-OW-6bX"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="5M0-WG-Mrk" id="dSI-E4-JLJ"/>
                         <outlet property="detailsNavigationItem" destination="Amt-OW-6bX" id="FFL-Ed-Zzs"/>
                         <outlet property="pokemonAbilities" destination="2m5-gY-LB7" id="eix-mF-0qZ"/>
                         <outlet property="pokemonIcons" destination="UNZ-QF-xOE" id="khE-8q-Pdg"/>

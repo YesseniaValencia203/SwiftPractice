@@ -66,6 +66,7 @@ class PokemonListViewController: UIViewController {
                 DispatchQueue.main.async {
                     self?.isFetchInProgress = false
                     self?.delegate?.onFetchFailed(with: error.localizedDescription)
+                    print("fetchPokemon(): \(error.localizedDescription)")
                 }
             }
         }
@@ -96,6 +97,7 @@ extension PokemonListViewController : UITableViewDataSource, UITableViewDelegate
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! PokemonTableViewCell
+        cell.layer.borderWidth = 0.3
         if isLoadingCell(for: indexPath) {
             cell.configurePokemonCell(with: .none)
         } else {
