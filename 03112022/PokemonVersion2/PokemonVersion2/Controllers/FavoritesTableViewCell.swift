@@ -12,6 +12,7 @@ class FavoritesTableViewCell: UITableViewCell {
     @IBOutlet weak var pokemonTypesLabel: UILabel!
     @IBOutlet weak var pokemonImageView: UIImageView!
     var pokemon: PokemonEntity? {
+        
         didSet {
             setupCell()
         }

@@ -21,7 +21,7 @@ struct PokemonServerModel: Codable {
         pokemon.name = (name!).capitalized
         pokemon.url = (url!).absoluteString
         PokemonServerModel.database.save()
-        print("\(name) Successfully Added")
+        print("\(name!) Successfully Added")
         
     }
     

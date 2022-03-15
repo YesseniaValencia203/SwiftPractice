@@ -11,31 +11,27 @@ import CloudKit
 class FavoritePokemonViewController: UIViewController {
     @IBOutlet weak var tableview: UITableView!
     
+
     @IBOutlet weak var refreshListButton: UIButton!
     @IBOutlet weak var favoriteTabItem: UITabBarItem!
     let database = DatabaseHandler()
     var pokemonList: [PokemonEntity]? {
         didSet {
             DispatchQueue.main.async {
+                
                 self.tableview.reloadData()
             }
         }
     }
-    @IBAction func deleteList(_ sender: Any) {
-        emptyStores()
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupDelegates()
+        tableview.tableFooterView = UIView(frame: .zero)
+        view.layer.cornerRadius = 10
+        tableview.layer.cornerRadius = 10
+        // Do any additional setup after loading the view.
     }
 
-    func emptyStores() {
-        pokemonList = database.fetch(PokemonEntity.self)
-        for item in (pokemonList)! {
-            database.delete(item)
-        }
-    }
-    func reloadFavorites() {
-        emptyStores()
-        pokemonList = database.fetch(PokemonEntity.self)
-        
-    }
     func setupDelegates() {
         
         tableview.delegate = self
@@ -43,14 +39,14 @@ class FavoritePokemonViewController: UIViewController {
         
     }
     
-    override func viewDidLoad() {
-       // emptyStores()
-        super.viewDidLoad()
-        setupDelegates()
-        tableview.tableFooterView = UIView(frame: .zero)
-        view.layer.cornerRadius = 10
-        tableview.layer.cornerRadius = 10
-        // Do any additional setup after loading the view.
+    @IBAction func reloadFavoritesList(_ sender: Any) {
+        DispatchQueue.main.async {
+            self.pokemonList = self.database.fetch(PokemonEntity.self)
+            for item in (self.pokemonList)! {
+                self.database.delete(item)
+            }
+            self.tableview.reloadData()
+        }
     }
   
     override func viewWillAppear(_ animated: Bool) {
@@ -61,6 +57,7 @@ class FavoritePokemonViewController: UIViewController {
    
     override func viewDidAppear(_ animated: Bool) {
         pokemonList = database.fetch(PokemonEntity.self)
+
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

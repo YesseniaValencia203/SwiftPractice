@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 class PokemonTableViewCell: UITableViewCell {
     var pokemonProfile: PokemonProfile?
@@ -26,18 +27,35 @@ class PokemonTableViewCell: UITableViewCell {
     }
     
     @objc func tapButton() {
-        guard let name = name, let pokemonURL = pokemonURL else { return }
-        let pokemon = PokemonServerModel(name: name, url: pokemonURL)
+        guard let name = name?.capitalized, let pokemonURL = pokemonURL else { return }
+        
         if currentFavorite {
-           
-            
-            currentFavorite = false
-            favoriteButton.setImage(UIImage(systemName: "heart"), for: .normal)
+            print("Currently a favorite")
+            let objects = DatabaseHandler.shared.fetch(PokemonEntity.self)
+            for object in objects {
+                if object.name == name && object.url == pokemonURL.absoluteString {
+                    print("\(object.name!) is in favorites. Being removed")
+                    DatabaseHandler.shared.delete(object)
+                    currentFavorite = false
+                    favoriteButton.setImage(UIImage(systemName: "heart"), for: .normal)
+                }
+            }
         } else {
-            pokemon.store()
+            let objects = DatabaseHandler.shared.fetch(PokemonEntity.self)
+            for object in objects {
+                if object.name == name && object.url == pokemonURL.absoluteString {
+                    print("Already in favorites. Not adding again")
+                    currentFavorite = true
+                    favoriteButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+                    return
+                }
+            }
+            let thispokemon = PokemonServerModel(name: name, url: pokemonURL)
+            thispokemon.store()
             currentFavorite = true
             favoriteButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
         }
+        
     }
     
     
@@ -48,6 +66,13 @@ class PokemonTableViewCell: UITableViewCell {
     
     func configurePokemonCell(with pokemonProfile: PokemonProfile?) {
         if let pokemonProfile = pokemonProfile {
+            let objects = DatabaseHandler.shared.fetch(PokemonEntity.self)
+            for object in objects {
+                if object.name?.capitalized == pokemonProfile.name?.capitalized {
+                    currentFavorite = true
+                    favoriteButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+                }
+            }
             isUserInteractionEnabled = true
             pokemonView.backgroundColor = .white
             pokemonName.alpha = 1

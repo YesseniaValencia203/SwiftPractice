@@ -29,12 +29,21 @@ class PokemonListViewController: UIViewController {
         
     override func viewDidLoad() {
         self.tabBarController?.navigationItem.title = "All Pokemons"
-
         super.viewDidLoad()
         tableview.dataSource = self
         tableview.prefetchDataSource = self
         tableview.delegate = self
         fetchPokemons()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        tableview.reloadData()
+        
+        
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        tableview.reloadData()
     }
     func fetchPokemons() {
         // Prevents more than a single call to the PAI
