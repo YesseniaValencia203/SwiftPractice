@@ -5,12 +5,6 @@
 //  Created by Consultant on 3/11/22.
 //
 
-//
-//  APIHandler.swift
-//  CoreDataExample
-//
-//  Created by Consultant on 3/10/22.
-//
 
 import Foundation
 class APIHandler {

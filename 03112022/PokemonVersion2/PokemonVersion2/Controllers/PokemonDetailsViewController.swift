@@ -1,10 +1,3 @@
-//
-//  PokemonDetailsViewController.swift
-//  PokemonAPI
-//
-//  Created by Consultant on 3/4/22.
-//
-
 import UIKit
 
 class PokemonDetailsViewController: UIViewController {
@@ -26,6 +19,7 @@ class PokemonDetailsViewController: UIViewController {
         super.viewDidLoad()
         activityIndicator.hidesWhenStopped = true 
         activityIndicator.startAnimating()
+        
     }
     
     func configureDetailsView() {
@@ -50,8 +44,5 @@ class PokemonDetailsViewController: UIViewController {
         for pokemonMove in (pokemonProfile.moves)! {
             pokemonMoves.text += "\((pokemonMove.move?.name)!.capitalized)\n"
         }
-        
     }
-
-
 }

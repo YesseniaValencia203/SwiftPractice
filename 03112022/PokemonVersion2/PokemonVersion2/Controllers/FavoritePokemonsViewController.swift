@@ -1,24 +1,14 @@
-//
-//  ViewController.swift
-//  PokemonVersion2
-//
-//  Created by Consultant on 3/11/22.
-//
-
 import UIKit
 import CloudKit
 
 class FavoritePokemonViewController: UIViewController {
     @IBOutlet weak var tableview: UITableView!
     
-
-    @IBOutlet weak var refreshListButton: UIButton!
     @IBOutlet weak var favoriteTabItem: UITabBarItem!
     let database = DatabaseHandler()
     var pokemonList: [PokemonEntity]? {
         didSet {
             DispatchQueue.main.async {
-                
                 self.tableview.reloadData()
             }
         }
@@ -29,30 +19,25 @@ class FavoritePokemonViewController: UIViewController {
         tableview.tableFooterView = UIView(frame: .zero)
         view.layer.cornerRadius = 10
         tableview.layer.cornerRadius = 10
-        // Do any additional setup after loading the view.
     }
 
     func setupDelegates() {
-        
+        // set delegate and datasource to itself.
         tableview.delegate = self
         tableview.dataSource = self
-        
     }
     
-    @IBAction func reloadFavoritesList(_ sender: Any) {
+    func reloadFavoritesList() {
         DispatchQueue.main.async {
             self.pokemonList = self.database.fetch(PokemonEntity.self)
             for item in (self.pokemonList)! {
                 self.database.delete(item)
             }
-            self.tableview.reloadData()
         }
     }
   
     override func viewWillAppear(_ animated: Bool) {
-        //APIHandler.shared.syncPokemon {
-            self.pokemonList = self.database.fetch(PokemonEntity.self)
-       // }
+        pokemonList = database.fetch(PokemonEntity.self)
     }
    
     override func viewDidAppear(_ animated: Bool) {

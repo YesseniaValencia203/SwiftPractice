@@ -1,10 +1,3 @@
-//
-//  FavoritesTableViewCell.swift
-//  PokemonVersion2
-//
-//  Created by Consultant on 3/11/22.
-//
-
 import UIKit
 
 class FavoritesTableViewCell: UITableViewCell {
@@ -12,7 +5,6 @@ class FavoritesTableViewCell: UITableViewCell {
     @IBOutlet weak var pokemonTypesLabel: UILabel!
     @IBOutlet weak var pokemonImageView: UIImageView!
     var pokemon: PokemonEntity? {
-        
         didSet {
             setupCell()
         }

@@ -1,10 +1,3 @@
-//
-//  ViewController.swift
-//  PokemonAPI
-//
-//  Created by Consultant on 3/4/22.
-//
-
 import UIKit
 
 protocol PokemonViewModelDelegate: AnyObject {
@@ -38,8 +31,6 @@ class PokemonListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         tableview.reloadData()
-        
-        
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
@@ -101,7 +92,6 @@ class PokemonListViewController: UIViewController {
             }
         }
     }
-        
 }
 extension PokemonListViewController : UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -134,8 +124,6 @@ extension PokemonListViewController : UITableViewDataSource, UITableViewDelegate
         }
         return cell
     }
-    
-    
 }
 extension PokemonListViewController : UITableViewDataSourcePrefetching {
     /*
@@ -168,9 +156,7 @@ extension PokemonListViewController: PokemonViewModelDelegate {
 }
 private extension PokemonListViewController {
     func isLoadingCell(for indexPath: IndexPath) -> Bool {
-        /*
-         Allows you to determine whether in the cell at that index path is beyond the count of the pokemon you have received so far
-         */
+        // Allows you to determine whether in the cell at that index path is beyond the count of the pokemon you have received so far
         return indexPath.row >= currentCount
     }
     
@@ -180,6 +166,7 @@ private extension PokemonListViewController {
         let endIndex = startIndex + newPokemon.count
         return (startIndex..<endIndex).map { IndexPath(row: $0, section: 0)}
     }
+    
     func visibleIndexPathsToReload(intersecting indexPaths: [IndexPath]) -> [IndexPath] {
         /*
          Calculates the cells of the table view that you need to reload when you receive a new page. It calculates the intersection of the IndexPath(s) passed in with the visible ones.
